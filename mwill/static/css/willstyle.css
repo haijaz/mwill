@@ -1,0 +1,17 @@
+.sticky-wrapper{position: fixed; top: 20; }
+
+.person{
+    margin-bottom: 20px;
+    }
+    
+.adder {
+    width: 100%;
+    }
+    
+#relativeSidebar a:hover{
+    background-color:yellow;
+    }   
+    
+.hidden {
+    display:none;
+    }

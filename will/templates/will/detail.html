@@ -1,0 +1,32 @@
+<h1>{{ person.name }}</h1>
+<h3><a href = "{% url 'will:results' person.id %}">calculate</a>
+<ul>
+{% for relative in person.inheritors_set.all %}
+    <li>{{ relative.name }}: {{relative.relationType}}
+    <a href= "{% url 'will:edit' person.id 'edit' relative.id %}">edit</a>
+    <a href= "{% url 'will:edit' person.id 'delete' relative.id  %}">delete</a>
+    </li>
+{% endfor %}
+</ul>
+
+<form action="{% url 'will:edit' person.id 'add' 0 %}" method="post">
+{% csrf_token %}
+Name: <input type="text" name="name">
+Gender: <select name ="gender">
+<option value = "Female">Female</option>
+<option value = "Male">Male</option>
+</select>
+<select name="relType">
+{% for type in relatives %}
+        <option value = {{ type.id }} > {{type.type}}</option>
+{% endfor %}
+</select>
+Alive: <select name="alive">
+    <option value = "True" selected = "True"> True </option>
+    <option value = "False"> False </option>
+</select>
+<input type="submit" value="Add Relative" />
+</form>
+
+<a href = " {% url 'will:newperson' 'delete' person.id %}">delete</a>
+<a href = " {% url 'will:index' %}">home</a>

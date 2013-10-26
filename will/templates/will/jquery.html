@@ -1,0 +1,123 @@
+{% extends "will/signedin.html" %}
+
+{% block content %}
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <h1>Add Relatives</h1>
+    </div>
+    <div class="pure-u-1-5">
+    </div>
+    <div class="pure-u-3-5">
+        <form class="pure-form pure-form-stacked">
+            <fieldset>
+                <div id="peoplelist">
+                    <div class="person" id="1">
+                        <legend class="relTitle">First Relative</legend>
+                        <div class="pure-g-r">
+                            <div class="pure-u-1-3">
+                                <label for="name">Full Name</label>
+                                <input id="name" class="relName" type="text" placeholder="Username" required>
+                            </div>
+                            <div class="pure-u-1-3">
+                                <label for="phonenumber">Phone Number</label>
+                                <input id="phonenumber" class="" type="text" placeholder="Phone Number">
+                            </div>
+                            <div class="pure-u-1-3">
+                            </div>
+                        </div>
+                        <div class="hidden" id="addressfields">
+                            <div class="pure-g-r">
+                            <div class="pure-u-1-3">
+                                <label for="streetaddress">Street Address</label>
+                                <input disabled="true" id="streetaddress" type="text" placeholder="Street Address">
+                            </div>
+                            <div class="pure-u-1-3">
+                                <label for="city">City</label>
+                                <input disabled="true" id="city" type="text" placeholder="City">                            
+                            </div>
+                            <div class="pure-u-1-3">
+                                <label for="state">State</label>
+                                <input disabled="true" id="state" type="text" placeholder="State">                             
+                            </div>
+                            <div class="pure-u-1-3">
+                                <label for="zip">Zipcode</label>
+                                <input disabled="true" id="zip" type="text" placeholder="Zipcode"> 
+                            </div>
+                            </div>
+                        </div>
+                        <label for="blnAddress" class="pure-checkbox">
+                            <input id="blnAddress" type="checkbox">Include Address
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="pure-button pure-button-primary">Submit</button>
+            </fieldset>
+        </form>
+    </div>
+    <div class="pure-u-1-5">
+        <div class="pure-menu pure-menu-open" id="sidebar">
+            <div class="pure-menu-heading">Relatives</div>
+                <ul id="relativeSidebar">
+                </ul>
+            <button class="pure-button pure-button-disabled" id="added">Add Field</button>
+        </div>
+    </div>
+
+        
+<script type="text/javascript">
+$(document).ready(function(){
+
+//generic helper function 
+$.fn.exists = function () {
+    return this.length !== 0;
+}
+
+//grab fields
+var $newel=$( ".person" ).first().clone();
+
+//keep add relative on screen
+$('#sidebar').waypoint('sticky');
+
+//hide and display address fields
+$("#peoplelist").on('click', 'input:checkbox', function(){
+    $("#addressfields").toggleClass('hidden');
+    $oldAttr = $("#addressfields div input").attr("disabled");
+    console.log(!$oldAttr);
+    $("#addressfields input").attr("disabled", !$oldAttr);
+});
+
+//change relative title and sidebar list
+$("#peoplelist").on('blur', 'input.relName', function(){
+    if($(this).val()){
+        $legend = $(this).parent().parent().find('.relTitle');
+        $legend.text($(this).val());
+        $('#added').removeClass("pure-button-disabled");
+        $('#added').addClass("adder");
+        idNum = $legend.parent().attr('id');
+        if ($("#sidebar ul li#person"+idNum).length){
+            $("#sidebar ul li#person"+idNum).text($(this).val());
+        }
+        else {
+            $('#sidebar ul').append("<a href=#"+idNum+"><li class='smallList' id=person"+idNum+">"+$(this).val()+"</li></a>");
+        }
+    }
+    
+});
+
+//highlight sidebar
+
+
+//add new relative field
+$( "#sidebar").on('click', ".adder" , function(){
+    $addRel = $newel.clone();
+    $n=$(".person").length;
+    $addRel.attr('id', ($n+1));
+    $addRel.find('legend').text('Relative '+($n+1));
+    $( "#peoplelist" ).append( $addRel);
+    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+});
+
+});
+</script>
+{% endblock%}
