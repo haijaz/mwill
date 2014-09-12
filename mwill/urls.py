@@ -8,6 +8,8 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'mwill.views.home', name='home'),
     # url(r'^mwill/', include('mwill.foo.urls')),
+    url(r'^register/(?P<action>\w+)', views.register, name="register"),
+    url(r'^register/', views.register, name="register"),
     url(r'^$', views.index, name="index"),
     url(r'^will/', include('will.urls', namespace = "will")),
     # Uncomment the admin/doc line below to enable admin documentation:

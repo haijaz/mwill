@@ -1,0 +1,6 @@
+@page {
+    size: a4 portrait;
+    @frame header_frame {           /* Static Frame */
+        -pdf-frame-content: header_content;
+        left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+    }

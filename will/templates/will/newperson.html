@@ -1,6 +1,6 @@
 {% extends "home/base.html" %}
 {% block content %}
-<form name="newperson" action="{% url 'will:newperson' 'add' '0'%}" method="POST">{% csrf_token %}
+<form name="newperson" action="{% url 'will:newperson' 'add' %}" method="POST">{% csrf_token %}
 Name: <input type="text" name="name">
 Gender: <input type="text" name="gender">
 <input type="submit">

@@ -1,5 +1,4 @@
 from __future__ import division
-from reportlab.pdfgen import canvas
 from django.template.loader import get_template
 from django.utils.html import escape
 from django.http import HttpResponse, HttpResponseRedirect
@@ -9,6 +8,8 @@ from django.template.context import Context
 import StringIO
 from xhtml2pdf import pisa
 from will.models import Testator, Relationships, Inheritors
+from django.conf import settings
+import os
 # from pdfs import render_to_pdf
 
 def calcEds(person):
@@ -49,12 +50,14 @@ def download_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     return generate_pdf('will/will.html', file_object=response)
     
+##commented out because importing this from pdfs
 def render_to_pdf(template_src, context_dict):
     """Function to render html template into a pdf file"""
     template = get_template(template_src)
     context = Context(context_dict)
     html = template.render(context)
     result = StringIO.StringIO()
+    print fetch_resources
 
     pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")),
                                             dest=result,
@@ -62,12 +65,12 @@ def render_to_pdf(template_src, context_dict):
                                             link_callback=fetch_resources)
     if not pdf.err:
         response = HttpResponse(result.getvalue(),
-                                                    mimetype='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="Last will of %s dated.pdf"' #include this to make a download, otherwise delete
+                                                    content_type ='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="Last will of %s dated.pdf"' %context['person'].name #include this to make a download, otherwise delete
         return response
 
-    return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))    
-    
+    return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+
 def createPDF(request, context):
     pdf = create_pdf(render(request, 'will/results.html', context))
     return pdf
