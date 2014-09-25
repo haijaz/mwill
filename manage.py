@@ -3,6 +3,7 @@ import os
 import sys
 
 if __name__ == "__main__":
+    # TODO check for existing relationships, if not present add-in
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mwill.settings")
     from django.core.management import execute_from_command_line
     execute_from_command_line(sys.argv)

@@ -156,7 +156,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'will',
     'django.contrib.admin',
-    'sitegate', # should be removed
+    #'sitegate', # should be removed
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
