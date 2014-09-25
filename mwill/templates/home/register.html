@@ -1,5 +1,11 @@
-<form name="register" action="{% url 'register' 'new' %}" method="POST">{% csrf_token %}
-Name: <input type="text" name="name">
-Gender: <input type="text" name="gender">
-<input type="submit">
-</form>
+{% extends "home/base.html" %}
+{% load sitegate %}
+
+{% block content %}
+    <div class="my_signin_block">
+        {% sitegate_signin_form %}
+    </div>
+    <div class="my_signup_block">
+        {% sitegate_signup_form %}
+    </div>
+{% endblock %}

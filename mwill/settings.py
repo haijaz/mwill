@@ -93,6 +93,23 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend"
+)
+
+LOGIN_REDIRECT_URL = '/'
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'SCOPE': ['email', 'publish_stream'],
+        'METHOD': 'js_sdk'  # instead of 'oauth2'
+    }
+}
+
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -115,6 +132,21 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+
+TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
+"django.core.context_processors.debug",
+"django.core.context_processors.i18n",
+"django.core.context_processors.media",
+"django.core.context_processors.static",
+"django.core.context_processors.tz",
+"django.core.context_processors.request",
+"allauth.account.context_processors.account",
+"allauth.socialaccount.context_processors.socialaccount",
+"django.contrib.messages.context_processors.messages")
+
+
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -124,6 +156,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'will',
     'django.contrib.admin',
+    'sitegate', # should be removed
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
     # Uncomment the next line to enable the admin:
     
     # Uncomment the next line to enable admin documentation:
@@ -158,3 +195,12 @@ LOGGING = {
         },
     }
 }
+
+##delete the following
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'openhaijaz'
+EMAIL_HOST_PASSWORD = 'ektelo9n'
+DEFAULT_FROM_EMAIL = 'openhaijaz@gmail.com'
+DEFAULT_TO_EMAIL = 'h.aijaz@gmail.com'
