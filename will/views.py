@@ -241,4 +241,6 @@ def edit(request, testator_id, relID, action):
 def input(request):
     people = Testator.objects.all()
     context = {"people": people}
-    return render(request, 'will/jquery.html', context) 
+    #switch from old template to testing new jquery template
+    #return render(request, 'will/jquery.html', context)
+    return render(request, 'will/jqueryv2.html', context)
