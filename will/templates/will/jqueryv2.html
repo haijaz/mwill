@@ -6,9 +6,11 @@
     <div id="inputBox">
         <form>
             <ul id="formList">
-                <li id="firstRelative" class="relEntry">
+                <li id="formRel1" class="relEntry">
                     <input type="text" name="relName" value="namehere">
+                    <button type="button" id="1" class="deleteButton">Delete</button>
                 </li>
+
             </ul>
             <input type="button" name="addNewPerson" value="Add Relative" id="test">
             <input type="submit" name="submit">
@@ -17,6 +19,7 @@
     <div id="nameBox">
         List Box
         <ul id="nameList">
+            <li id="1">listRel1</li>
             </ul>
     </div>
 
@@ -25,10 +28,33 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-var $newel = $("#firstRelative").clone();
+var $relNum = 1;
 
-$( "#test" ).on( "click", "ul li", function() {
-    $( $newel ).insertAfter( "li:last-of-type" );
+function deleteRelative() {
+    if($("ul#formList li").size()==1){
+        alert("You must have at least one relative");
+    } else {
+    $(this).parent().remove();
+    $("ul#nameList li#"+$(this).attr("id")).remove();
+        }
+}
+
+$("#formRel1").on("click", ".deleteButton", deleteRelative);
+
+
+$( "#test").click(function() {
+    $relNum +=1;
+    var $newel = $("ul li:first").clone().removeAttr("id");
+    $newel.children($("input[name='relName']")).val("Relative's Name");
+    $relID=$("ul#formList li").size()+1;
+    $newel.attr('id', $relNum);
+    $newel.children("button").attr('id', $relNum);
+    $newel.insertAfter( "ul#formList li:last" );
+
+    //sidebar names
+    var $list = "<li id="+$relNum+">"+$relNum+"</li>";
+    $( $list ).insertAfter("ul#nameList li:last");
+    $newel.on("click", ".deleteButton", deleteRelative);
 });
 
 
