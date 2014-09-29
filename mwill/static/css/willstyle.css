@@ -15,3 +15,7 @@
 .hidden {
     display:none;
     }
+
+li.relEntry {
+    list-style-type: none;
+}
