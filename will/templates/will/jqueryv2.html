@@ -1,6 +1,7 @@
 {% extends "will/signedin.html" %}
 
 {% block content %}
+
 <div class="container">
     <div class="row">
         <div class="col-md-7" id="inputBox">
@@ -8,19 +9,23 @@
             <form class="form-horizontal" role="form">
                 <ul id="formList">
                     <li id="1" class="relEntry">
-                        <div class="form-group">
+
+                        <fieldset class="form-border">
+                            <legend id="1" class="form-border">Testing</legend>
+                            <div class="form-group">
                             <label for="relNameInput" class="col-sm-4 control-label">Relative's Name</label>
                             <div class="col-sm-5">
-                                <input id="relNameInput" type="text" name="relName" value="" placeholder="Type name" class="form-control relNameInput">
+                                <input id="relNameInput" type="text" name="relName" placeholder="Type name" class="form-control relNameInput">
                             </div>
-                            <button id="1" class="deleteButton btn btn-sm btn-danger col-sm-2">Delete</button>
-                        </div>
+                            <button type="button" id="1" class="deleteButton btn btn-sm btn-danger col-sm-2">Delete Relative</button>
+                            </div>
                         <div class="form-group">
                             <label for="relType" class="col-sm-4 control-label">Type of Relationship</label>
                             <div class="col-sm-5">
                                 <input id="relType" type="text" name="relType" value="" placeholder="Choose" class="form-control">
                             </div>
                         </div>
+                        </fieldset>
                     </li>
                 </ul>
             <input type="button" name="addNewPerson" value="Add Relative" id="test" class="btn btn-primary">
@@ -42,27 +47,30 @@ var $relNum = 1;
 
 function changeName() {
     console.log($(this).val());
-    $num = $(this).parent().parent().parent().attr("id");
+    $num = $(this).parent().parent().parent().parent().attr("id");
     console.log($num);
     $("ul#nameList li#"+$num+" span").html($(this).val());
+    $(this).parent().parent().parent().parent().find("legend").html($(this).val());
 }
 
 function deleteRelative() {
     if($("ul#formList li").size()==1){
         alert("You must have at least one relative");
-    } else {
-    $(this).parent().parent().remove();
+    }
+    else {
+    $(this).parent().parent().parent().remove();
     $("ul#nameList li#"+$(this).attr("id")).remove();
         }
 }
 
 $(".relEntry").on("click", ".deleteButton", deleteRelative);
-
+$(".relEntry").on("change", ".relNameInput", changeName);
 
 $( "#test").click(function() {
     $relNum +=1;
     var $newel = $("ul li:first").clone().removeAttr("id");
-    $newel.children($("input[name='relName']")).val("");
+    $newel.find("#relNameInput").val('');
+    $newel.find("legend").html('New Relative');
     $newel.attr('id', $relNum);
     $newel.find("button").attr('id', $relNum);
     $newel.insertAfter( "ul#formList li:last" );

@@ -19,3 +19,16 @@
 li.relEntry {
     list-style-type: none;
 }
+
+.form-border {
+    border: 2px;
+    border-style: groove;
+    margin-bottom: 5px;
+}
+
+legend.form-border {
+    border:none;
+    width: auto;
+    margin:0 20px;
+    padding: 0 5px;
+}
