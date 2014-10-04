@@ -1,6 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Testator(models.Model):
+    user = models.ForeignKey(User, blank=True, null=True)
     name = models.CharField(max_length = 30)
     gender = models.CharField(max_length = 6)
     def __unicode__(self):
@@ -12,11 +14,11 @@ class Relationships(models.Model):
         return self.type
     
 class Inheritors(models.Model):
-    name = models.CharField(max_length = 30)
-    gender = models.CharField(max_length = 6)
+    name = models.CharField(max_length = 30, blank=True, null=True)
+    gender = models.CharField(max_length = 6, blank=True, null=True)
     relative = models.ForeignKey('self', blank=True, null=True)
-    testator = models.ForeignKey(Testator)
-    relationType = models.ForeignKey(Relationships)
+    testator = models.ForeignKey(Testator, blank=True, null=True)
+    relationType = models.ForeignKey(Relationships, blank=True, null=True)
     alive = models.NullBooleanField(null=True, default = True)
     def __unicode__(self):
         return self.name

@@ -1,0 +1,112 @@
+{% extends "will/signedin.html" %}
+
+{% block content %}
+<h3>{{ person.id }}</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-7" id="inputBox">
+            <h3>Add Relatives</h3>
+            <form class="form-horizontal" role="form" method="POST" action=" {% url 'will:CRUD' %} ">
+            {% csrf_token %}
+                <ul id="formList">
+                    {% for relative in person.inheritors_set.all %}
+                        <li class ="relEntry" id="{{ forloop.counter }}">
+                        <fieldset class="form-border">
+                            <legend id="1" class="form-border">{{ relative.name }}</legend>
+                            <div class="form-group">
+                                <label for="relNameInput" class="col-sm-4 control-label">Relative's Name: id {{ relative.id }}</label>
+                                <div class="col-sm-5">
+                                    <input id="relNameInput" value={{ relative.name }} type="text" name="relName{{ forloop.counter }}" placeholder="Type name" class="form-control relNameInput">
+                                </div>
+                                <button type="button" id="1" class="deleteButton btn btn-sm btn-danger col-sm-2">Delete Relative</button>
+                            </div>
+                        <div class="form-group">
+                            <label for="relType" class="col-sm-4 control-label">Type of Relationship</label>
+                            <div class="col-sm-5">
+                                <select id="relTypeSelect" name="relType{{ forloop.counter }}" class="form-control">
+                                    {% for eachRel in listofRelationships %}
+                                        <option {% if relative.relationType == eachRel %} selected="True" {% endif %}  value = "{{ eachRel.id }}" >{{eachRel.type}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <input class="inheritorID" type="hidden" name="inheritorID{{ forloop.counter }}" value="{{ relative.id }}">
+                        </li>
+                        </fieldset>
+
+                    {% endfor %}
+                </ul>
+            <input type="button" name="addNewPerson" value="Add Relative" id="test" class="btn btn-primary">
+            <input type="hidden" id = "listofID" name="listofID" value="">
+            <input type="hidden" id = "listofID" name="testatorID" value="{{ person.id }}">
+            <input type="submit" class="btn btn-success" name="submit" id="submitButton">
+        </form>
+        </div>
+        <div id="nameBox" class="col-md-4 col-md-offset-1">
+        <h3>List Box</h3>
+        <ul id="nameList">
+            <li id="1"><span id="1">listRel1</span></li>
+        </ul>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+
+var $relNum = $("ul#formList li").size();
+
+$("#submitButton").mouseover(function(){
+    var $idList = $('li.relEntry').map(function() {
+      return this.id;
+    }).get().join(',');
+    $("#listofID").attr("value", $idList);
+    console.log($idList);
+
+});
+
+
+function changeName() {
+    console.log($(this).val());
+    $num = $(this).parent().parent().parent().parent().attr("id");
+    console.log($num);
+    $("ul#nameList li#"+$num+" span").html($(this).val());
+    $(this).parent().parent().parent().parent().find("legend").html($(this).val());
+}
+
+function deleteRelative() {
+    if($("ul#formList li").size()==1){
+        alert("You must have at least one relative");
+    }
+    else {
+    $(this).parent().parent().parent().remove();
+    $("ul#nameList li#"+$(this).attr("id")).remove();
+        }
+}
+
+$(".relEntry").on("click", ".deleteButton", deleteRelative);
+$(".relEntry").on("change", ".relNameInput", changeName);
+
+$( "#test").click(function() {
+    $relNum +=1;
+    var $newel = $("ul li:first").clone().removeAttr("id");
+    $newel.find("#relNameInput").val('');
+    $newel.find("#relNameInput").attr('name', "relName"+$relNum);
+    $newel.find("#relTypeSelect").attr('name', "relType"+$relNum);
+    $newel.find("legend").html('New Relative');
+    $newel.attr('id', $relNum);
+    $newel.find("button").attr('id', $relNum);
+    $newel.find("input.inheritorID").attr("name", "inheritorID"+$relNum);
+    $newel.find("input.inheritorID").attr("value", -1)
+    $newel.insertAfter( "ul#formList li:last" );
+
+    //sidebar names
+    var $list = "<li id="+$relNum+"><span id='"+$relNum+"'>New Relative</span></li>";
+    $( $list ).insertAfter("ul#nameList li:last");
+    $newel.on("click", ".deleteButton", deleteRelative);
+    $newel.on("change", ".relNameInput", changeName);
+});
+
+
+});
+</script>
+{% endblock%}

@@ -32,8 +32,10 @@
 </div>
 {% block content %}
 
-<a href="{% url 'will:input' %}">Add Relatives</a>
-
+<a href="{% url 'will:input' %}">Add Relatives</a><br>
+<a href="{% url 'will:newperson' %}">New Testator</a><br>
+<a href="{% url 'will:input' %}">For individuals (one testator per user)</a><br>
+<a href="{% url 'will:input' %}">For Organizations (multiple testators per user) change to multi input</a>
 {% endblock %}
 {% endblock %}
 {% block extra_body %}

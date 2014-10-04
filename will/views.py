@@ -9,6 +9,9 @@ import StringIO
 from xhtml2pdf import pisa
 from will.models import Testator, Relationships, Inheritors
 from django.conf import settings
+from django.contrib.auth.models import User
+
+
 import os
 # from pdfs import render_to_pdf
 
@@ -192,7 +195,7 @@ def index(request):
     context = {"people": people}
     return render(request, 'will/index.html', context)
         
-def newperson(request, action, testator_id):
+def newperson(request, action="new", testator_id=0):
     if action=="new":
         return render(request, 'will/newperson.html')
     if action=="delete":
@@ -201,7 +204,12 @@ def newperson(request, action, testator_id):
         return HttpResponseRedirect(reverse('will:index'))
     if request.method=="POST":
         if action=="add":
+            if request.user.is_authenticated():
+                user = request.user
+            else:
+                user = User.objects.get(id=2)
             a = Testator(
+                user = user,
                 name = request.POST["name"],
                 gender = request.POST["gender"]
                 )
@@ -237,10 +245,26 @@ def edit(request, testator_id, relID, action):
             )
     return HttpResponseRedirect(reverse('will:detail', args=(person.id,)))
     
-    
+def CRUD(request):
+    listofIDS = request.POST["listofID"].split(",")
+    for formID in listofIDS:
+        obj, created = Inheritors.objects.update_or_create(
+            id=request.POST["inheritorID"+formID]
+        )
+        obj.testator = Testator.objects.get(pk=request.POST["testatorID"])
+        obj.name=request.POST["relName"+formID]
+        obj.relationType=Relationships.objects.get(pk=request.POST["relType"+formID])
+        obj.save()
+    person = Testator.objects.get(user=request.user.id)
+    relTypes = Relationships.objects.all()
+    context = {"person": person, "listofRelationships": relTypes}
+    return render(request, 'will/jqueryv3.html', context)
+
+
 def input(request):
-    people = Testator.objects.all()
-    context = {"people": people}
+    person = Testator.objects.get(user=request.user.id)
+    relTypes = Relationships.objects.all()
+    context = {"person": person, "listofRelationships": relTypes}
     #switch from old template to testing new jquery template
     #return render(request, 'will/jquery.html', context)
-    return render(request, 'will/jqueryv2.html', context)
+    return render(request, 'will/jqueryv3.html', context)
