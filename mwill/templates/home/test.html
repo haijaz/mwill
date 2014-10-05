@@ -7,7 +7,6 @@
 </head>
 <body>
 {% block body %}
-<em>Important: Authentication via OAuth based providers will not work until you <a href="/admin/socialaccount/socialapp/">setup proper applicaton credentials</a>.</em>
 {% if messages %}
 <div>
 <strong>Messages:</strong>
@@ -19,7 +18,7 @@
 </div>
 {% endif %}
 <div>
-<strong>Menu:</strong>
+
 <ul>
 {% if user.is_authenticated %}
 <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
@@ -32,10 +31,16 @@
 </div>
 {% block content %}
 {% if user.is_authenticated %}
-<a href="{% url 'will:input' %}">Add Relatives</a><br>
-<a href="{% url 'will:newperson' %}">New Testator</a><br>
-<a href="{% url 'will:input' %}">For individuals (one testator per user)</a><br>
-<a href="{% url 'will:input' %}">For Organizations (multiple testators per user) change to multi input</a>
+    <a href="{% url 'will:input' %}">Add Relatives</a><br>
+    {% if user.testator_set %}
+        {% for testator in user.testator_set.all  %}
+            <a href="{% url 'will:newperson' 'edit'  testator.id  %}">Edit Profile for Testator {{ testator.name }}</a><br>
+            <a href="{% url 'will:newperson' 'delete' testator.id %}">click here to delete testator</a>
+            {% if testator.inheritors_set %}<br>
+                <a href="{% url 'will:results' testator.id %}">click here to generate</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 {% endif %}
 {% endblock %}
 {% endblock %}

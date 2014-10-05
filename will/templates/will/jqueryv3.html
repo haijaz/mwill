@@ -11,8 +11,6 @@
                 <ul id="formList">
                 {% if person.inheritors_set.all|length > 0 %}
                     {% for relative in person.inheritors_set.all %}
-
-
                         <li class ="relEntry" id="{{ forloop.counter }}">
                         <fieldset class="form-border">
                             <legend id="1" class="form-border">{{ relative.name }}</legend>

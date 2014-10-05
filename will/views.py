@@ -194,25 +194,27 @@ def index(request):
     return render(request, 'will/index.html', context)
         
 def newperson(request, action="new", testator_id=0):
-    if action=="new":
-        return render(request, 'will/newperson.html')
+    if request.method=="POST":
+        try:
+            person = Testator.objects.get(pk=request.POST["testator_id"])
+        except:
+            person = Testator()
+        person.user = User.objects.get(pk=request.user.id)
+        person.name = request.POST["name"]
+        person.gender =request.POST["gender"]
+        person.save()
+        return HttpResponseRedirect(reverse('will:input'))
     if action=="delete":
         d = Testator.objects.get(pk=testator_id)
         d.delete()
-        return HttpResponseRedirect(reverse('will:index'))
-    if request.method=="POST":
-        if action=="add":
-            if request.user.is_authenticated():
-                user = request.user
-            else:
-                user = User.objects.get(id=2)
-            a = Testator(
-                user = user,
-                name = request.POST["name"],
-                gender = request.POST["gender"]
-                )
-            a.save()
-        return HttpResponseRedirect(reverse('will:input'))
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        try:
+            person = Testator.objects.get(pk=testator_id)
+        except:
+            person = None
+        context = {"person": person}
+        return render(request, 'will/newperson.html', context)
 
 def detail(request, testator_id):
     relTypes = Relationships.objects.all()
@@ -284,6 +286,7 @@ def input(request):
         try:
             person = Testator.objects.get(user=request.user.id)
         except:
+            action="add"
             return HttpResponseRedirect(reverse('will:newperson'))
     else:
         return HttpResponseRedirect(reverse('index'))

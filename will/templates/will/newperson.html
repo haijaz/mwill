@@ -1,8 +1,9 @@
 {% extends "home/base.html" %}
 {% block content %}
-<form name="newperson" action="{% url 'will:newperson' 'add' '0'%}" method="POST">{% csrf_token %}
-Name: <input type="text" name="name">
-Gender: <input type="text" name="gender">
+<form name="newperson" action="{% url 'will:newperson' %}" method="POST">{% csrf_token %}
+Name: <input type="text" name="name" value="{{ person.name }}">
+Gender: <input type="text" name="gender" value="{{ person.gender }}">
+<input type="hidden" name="testator_id" value="{{ person.id }}">
 <input type="submit">
 </form>
 

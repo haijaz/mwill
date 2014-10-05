@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from localflavor.us.us_states import STATE_CHOICES
 
 class Testator(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
     name = models.CharField(max_length = 30)
     gender = models.CharField(max_length = 6)
+    state = models.CharField(max_length=2, choices=STATE_CHOICES, null=True, blank=True)
     def __unicode__(self):
         return self.name
         

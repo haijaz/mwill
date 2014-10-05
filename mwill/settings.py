@@ -161,6 +161,7 @@ INSTALLED_APPS = (
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
+    'localflavor',
     # Uncomment the next line to enable the admin:
     
     # Uncomment the next line to enable admin documentation:
