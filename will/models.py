@@ -22,6 +22,3 @@ class Inheritors(models.Model):
     alive = models.NullBooleanField(null=True, default = True)
     def __unicode__(self):
         return self.name
-        
-
-    

@@ -9,7 +9,10 @@
             <form class="form-horizontal" role="form" method="POST" action=" {% url 'will:CRUD' %} ">
             {% csrf_token %}
                 <ul id="formList">
+                {% if person.inheritors_set.all|length > 0 %}
                     {% for relative in person.inheritors_set.all %}
+
+
                         <li class ="relEntry" id="{{ forloop.counter }}">
                         <fieldset class="form-border">
                             <legend id="1" class="form-border">{{ relative.name }}</legend>
@@ -31,10 +34,36 @@
                             </div>
                         </div>
                         <input class="inheritorID" type="hidden" name="inheritorID{{ forloop.counter }}" value="{{ relative.id }}">
-                        </li>
                         </fieldset>
+                        </li>
 
-                    {% endfor %}
+                        {% endfor %}
+                        {% else %}
+                                                <li class ="relEntry" id="1">
+                        <fieldset class="form-border">
+                            <legend id="1" class="form-border">Relative's Name</legend>
+                            <div class="form-group">
+                                <label for="relNameInput" class="col-sm-4 control-label">Relative's Name:</label>
+                                <div class="col-sm-5">
+                                    <input id="relNameInput" value="" type="text" name="relName1" placeholder="Type name" class="form-control relNameInput">
+                                </div>
+                                <button type="button" id="1" class="deleteButton btn btn-sm btn-danger col-sm-2">Delete Relative</button>
+                            </div>
+                        <div class="form-group">
+                            <label for="relType" class="col-sm-4 control-label">Type of Relationship</label>
+                            <div class="col-sm-5">
+                                <select id="relTypeSelect" name="relType1" class="form-control">
+                                    {% for eachRel in listofRelationships %}
+                                        <option {% if relative.relationType == eachRel %} selected="True" {% endif %}  value = "{{ eachRel.id }}" >{{eachRel.type}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <input class="inheritorID" type="hidden" name="inheritorID1" value="1">
+                        </fieldset>
+                        </li>
+                        {% endif %}
+
                 </ul>
             <input type="button" name="addNewPerson" value="Add Relative" id="test" class="btn btn-primary">
             <input type="hidden" id = "listofID" name="listofID" value="">
@@ -96,7 +125,7 @@ $( "#test").click(function() {
     $newel.attr('id', $relNum);
     $newel.find("button").attr('id', $relNum);
     $newel.find("input.inheritorID").attr("name", "inheritorID"+$relNum);
-    $newel.find("input.inheritorID").attr("value", -1)
+    $newel.find("input.inheritorID").attr("value", "0")
     $newel.insertAfter( "ul#formList li:last" );
 
     //sidebar names

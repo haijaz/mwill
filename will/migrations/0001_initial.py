@@ -16,8 +16,8 @@ class Migration(migrations.Migration):
             name='Inheritors',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=30)),
-                ('gender', models.CharField(max_length=6)),
+                ('name', models.CharField(max_length=30, null=True, blank=True)),
+                ('gender', models.CharField(max_length=6, null=True, blank=True)),
                 ('alive', models.NullBooleanField(default=True)),
             ],
             options={
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=30)),
                 ('gender', models.CharField(max_length=6)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
             },
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='inheritors',
             name='relationType',
-            field=models.ForeignKey(to='will.Relationships'),
+            field=models.ForeignKey(blank=True, to='will.Relationships', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='inheritors',
             name='testator',
-            field=models.ForeignKey(to='will.Testator'),
+            field=models.ForeignKey(blank=True, to='will.Testator', null=True),
             preserve_default=True,
         ),
     ]

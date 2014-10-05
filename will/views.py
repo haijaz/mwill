@@ -10,8 +10,6 @@ from xhtml2pdf import pisa
 from will.models import Testator, Relationships, Inheritors
 from django.conf import settings
 from django.contrib.auth.models import User
-
-
 import os
 # from pdfs import render_to_pdf
 
@@ -214,7 +212,7 @@ def newperson(request, action="new", testator_id=0):
                 gender = request.POST["gender"]
                 )
             a.save()
-        return HttpResponseRedirect(reverse('will:index'))
+        return HttpResponseRedirect(reverse('will:input'))
 
 def detail(request, testator_id):
     relTypes = Relationships.objects.all()
@@ -246,23 +244,49 @@ def edit(request, testator_id, relID, action):
     return HttpResponseRedirect(reverse('will:detail', args=(person.id,)))
     
 def CRUD(request):
-    listofIDS = request.POST["listofID"].split(",")
-    for formID in listofIDS:
-        obj, created = Inheritors.objects.update_or_create(
-            id=request.POST["inheritorID"+formID]
-        )
-        obj.testator = Testator.objects.get(pk=request.POST["testatorID"])
-        obj.name=request.POST["relName"+formID]
-        obj.relationType=Relationships.objects.get(pk=request.POST["relType"+formID])
-        obj.save()
+    listOfInheritorIDS = []
     person = Testator.objects.get(user=request.user.id)
+    relatives=person.inheritors_set.all()
+
+    #very hacky this loops through a list of form IDS, and grabs the values of hidden inputs to get the pk
+    # for the inheritors table, wiht a default value of -1 if not present in the table (e.g., newly added in form)
+    # then, it loops through the list of relatives connected tothe current testator, and if the relative is not
+    # also listed in the inheritor list form the form (i.e., the relative was deleted) then delete the record
+    # then, this goes through and updates or adds in the relative information from the form.
+    #, likely, this can be consolidated into one step, looping through the relatives set with the associated
+    # testator, and if not present in the form list, delete, if not update and get - each only loop once
+
+    listofIDS = request.POST["listofID"].split(",")
+    for inheritorID in listofIDS:
+        listOfInheritorIDS.append(request.POST["inheritorID"+inheritorID])
+    for eachRelative in relatives:
+        temp = eachRelative.id.__str__()
+        if temp in listOfInheritorIDS:
+            pass
+        else:
+            eachRelative.delete()
+    for formID in listofIDS:
+        #if maybe check for default and create, if not update
+        try:
+            obj = Inheritors.objects.get(pk=request.POST["inheritorID"+formID])
+        except Inheritors.DoesNotExist:
+            obj = Inheritors()
+        obj.relationType=Relationships.objects.get(pk=request.POST["relType"+formID])
+        obj.name=request.POST["relName"+formID]
+        obj.testator = Testator.objects.get(pk=request.POST["testatorID"])
+        obj.save()
     relTypes = Relationships.objects.all()
     context = {"person": person, "listofRelationships": relTypes}
-    return render(request, 'will/jqueryv3.html', context)
-
+    return HttpResponseRedirect(reverse('index'))
 
 def input(request):
-    person = Testator.objects.get(user=request.user.id)
+    if request.user.is_authenticated():
+        try:
+            person = Testator.objects.get(user=request.user.id)
+        except:
+            return HttpResponseRedirect(reverse('will:newperson'))
+    else:
+        return HttpResponseRedirect(reverse('index'))
     relTypes = Relationships.objects.all()
     context = {"person": person, "listofRelationships": relTypes}
     #switch from old template to testing new jquery template
